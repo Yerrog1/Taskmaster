@@ -80,7 +80,7 @@
 		<dependency>
 			<groupId>com.microsoft.azure</groupId>
 			<artifactId>applicationinsights-runtime-attach</artifactId>
-			<version>3.4.9</version>
+			<version>3.4.19</version>
 		</dependency>
 		<dependency>
 			<groupId>com.microsoft.azure</groupId>
