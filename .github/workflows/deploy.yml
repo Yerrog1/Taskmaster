@@ -1,0 +1,124 @@
+name: Despliegue a producción
+on:
+    push:
+        branches:
+            - main
+# Asegurarse de que las pruebas unitarias pasen antes de desplegar
+# a producción
+jobs:
+    java-test:
+        name: Pruebas de Java
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v3
+            -   name: Setup Java and Maven
+                uses: actions/setup-java@v1
+                with:
+                    java-version: 17
+                    distribution: 'temurin'
+                    java-package: jdk
+                    cache: 'maven'
+            -   name: Ejecutar tests
+                run: mvn test -Dspring.profiles.active=test
+    java-build:
+        name: Crear imagen de Java
+        needs: java-test
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v3
+            -   name: Setup Java and Maven
+                uses: actions/setup-java@v1
+                with:
+                    java-version: 17
+                    distribution: 'temurin'
+                    java-package: jdk
+                    cache: 'maven'
+            -   name: Login a Azure Container Registry
+                uses: azure/docker-login@v1
+                with:
+                    login-server: ${{ secrets.ACR_SERVER }}
+                    username: ${{ secrets.ACR_USERNAME }}
+                    password: ${{ secrets.ACR_PASSWORD }}
+            -   name: Compilar y subir a Azure Container Registry
+                run: mvn compile jib:build -Dimage.tag=latest
+    java-deploy:
+        name: Desplegar Java a Podman
+        needs: java-build
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Connect via SSH
+                uses: appleboy/ssh-action@master
+                with:
+                    host: ${{ secrets.VM_IP }}
+                    username: ${{ secrets.VM_USERNAME }}
+                    key: ${{ secrets.VM_SSH_KEY }}
+                    port: ${{ secrets.VM_PORT }}
+                    script: |
+                        systemctl --user stop container-prod
+                        podman pull --authfile=/home/ariel/podman.json ${{ secrets.ACR_SERVER }}/taskmaster:latest
+                        systemctl --user start container-prod
+
+    vue-test:
+        name: Pruebas de Vue
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v3
+            -   name: Setup Node.js
+                uses: actions/setup-node@v3
+                with:
+                    node-version: '16'
+                    cache: 'npm'
+                    cache-dependency-path: 'front/package-lock.json'
+            -   name: Instalar dependencias
+                uses: borales/actions-yarn@v4
+                with:
+                    cmd: install
+                    dir: 'front'
+            -   name: Ejecutar tests
+                uses: borales/actions-yarn@v4
+                with:
+                    cmd: test
+                    dir: 'front'
+    vue-build:
+        name: Crear imagen de Nuxt
+        needs: vue-test
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v3
+            -   name: Setup Node and NPM
+                uses: actions/setup-node@v3
+                with:
+                    node-version: '16'
+            -   name: Login a Azure Container Registry
+                uses: azure/docker-login@v1
+                with:
+                    login-server: ${{ secrets.ACR_SERVER }}
+                    username: ${{ secrets.ACR_USERNAME }}
+                    password: ${{ secrets.ACR_PASSWORD }}
+            -   name: Dockerizar y subir a Azure Container Registry
+                working-directory: ./front
+                run: |
+                    echo 'API_BASE=${{ secrets.FRONT_API_BASE }}' > .env &&
+                    docker build -t ${{ secrets.ACR_SERVER }}/front:latest . &&
+                    docker push ${{ secrets.ACR_SERVER }}/front:latest
+
+    vue-deploy:
+        name: Desplegar Nuxt a Podman
+        needs: vue-build
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Connect via SSH
+                uses: appleboy/ssh-action@master
+                with:
+                    host: ${{ secrets.VM_IP }}
+                    username: ${{ secrets.VM_USERNAME }}
+                    key: ${{ secrets.VM_SSH_KEY }}
+                    port: ${{ secrets.VM_PORT }}
+                    script: |
+                        systemctl --user stop container-front
+                        podman pull --authfile=/home/ariel/podman.json ${{ secrets.ACR_SERVER }}/front:latest
+                        systemctl --user start container-front

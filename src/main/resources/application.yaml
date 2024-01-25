@@ -1,0 +1,17 @@
+spring:
+    liquibase:
+        change-log: classpath:db/master.xml
+
+app:
+    jwt-secret: ${JWT_SECRET}
+    azure-cs-conn-string: ${AZURECS_CONNECTION_STRING}
+    azure-cs-sender-email: ${AZURECS_SENDER_ADDRESS}
+    frontend-base-url: ${FRONTEND_BASE_URL:localhost:3000}
+    azure-storage-account: ${AZURE_STORAGE_ACCOUNT_NAME:taskmasterstacc}
+    azure-storage-key: ${AZURE_STORAGE_ACCOUNT_KEY}
+    azure-storage-container: ${AZURE_STORAGE_CONTAINER}
+server:
+    error:
+        whitelabel:
+            enabled: false
+        path: /error

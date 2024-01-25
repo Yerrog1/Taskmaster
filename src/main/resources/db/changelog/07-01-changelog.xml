@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.17.xsd"
+	objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+	<changeSet id="1675757808101-1" author="a19adrianbm (generated)">
+		<addColumn tableName="project">
+			<column name="is_public" type="BOOLEAN"/>
+		</addColumn>
+	</changeSet>
+	<changeSet id="1675757808101-2" author="a19adrianbm (generated)">
+		<addNotNullConstraint columnDataType="BOOLEAN" columnName="is_public" tableName="project"/>
+	</changeSet>
+
+</databaseChangeLog>

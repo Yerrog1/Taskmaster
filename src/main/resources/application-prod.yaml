@@ -1,0 +1,20 @@
+spring:
+    h2:
+        console:
+            enabled: false
+    jpa:
+        database: mysql
+        hibernate:
+            ddl-auto: none
+    datasource:
+        url: ${DATABASE_URL}
+        username: ${DATABASE_USER}
+        password: ${DATABASE_PASSWORD}
+app:
+    cors-allowed-origins:
+        - https://taskmaster.costas.dev
+        - http://localhost:3000
+server:
+    error:
+        include-exception: true
+        include-stacktrace: never

@@ -1,0 +1,18 @@
+spring:
+    jpa:
+        database: mysql
+        hibernate:
+            ddl-auto: none
+    datasource:
+        url: jdbc:mysql://localhost:3306/taskmaster
+        username: jdbc
+        password: jdbc
+app:
+    cors-allowed-origins:
+        - http://localhost:3000
+    azure-cs-sender-email: noresponder@ba3c1f73-2c00-4cb8-9dae-f84a0a5fbbf6.azurecomm.net
+    azure-cs-conn-string: endpoint=https://taskmaster-comserv.communication.azure.com/;accesskey=eSjE/1loFmFyt3vS6PsDARtrB0FOgGl+zF8JK0Q/AsRkeWnB1BbClliuC0Zy8pcrpPviVkNIbms7cjjf9qSggg==
+    jwt-secret: abc123
+    azure-storage-account: ${AZURE_STORAGE_ACCOUNT_NAME:taskmasterstacc}
+    azure-storage-key: ${AZURE_STORAGE_ACCOUNT_KEY:4q4B1tpWdz/v8GZkzSKc9BImvzdqOynqe/9FBJ0bxK9hul9PTXBdBrLg9Cb2+Ho81+dqD68HShLD+AStVtapcw==}
+    azure-storage-container: ${AZURE_STORAGE_CONTAINER:taskmaster-dev}
