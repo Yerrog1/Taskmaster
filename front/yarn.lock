@@ -7388,7 +7388,7 @@ __metadata:
     pug: ^3.0.2
     pug-plain-loader: ^1.1.0
     sass: ^1.57.1
-    sass-loader: ^10
+    sass-loader: ^14
     ts-jest: ^29.0.3
     vue: ^2.7.10
     vue-jest: ^3.0.4
@@ -13267,7 +13267,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sass-loader@npm:10.1.1, sass-loader@npm:^10":
+"sass-loader@npm:10.1.1":
   version: 10.1.1
   resolution: "sass-loader@npm:10.1.1"
   dependencies:
@@ -13289,6 +13289,27 @@ __metadata:
     sass:
       optional: true
   checksum: dbd4ba06e2a7de50db4588c9e84e38fb458ca4a44e1fccdf6eded728662b6fe0bd556249970876f13b47424e4285f5c6a8953933f83d47fd1448cad5884f84a5
+  languageName: node
+  linkType: hard
+
+"sass-loader@npm:^14":
+  version: 14.0.0
+  resolution: "sass-loader@npm:14.0.0"
+  dependencies:
+    neo-async: ^2.6.2
+  peerDependencies:
+    node-sass: ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0 || ^9.0.0
+    sass: ^1.3.0
+    sass-embedded: "*"
+    webpack: ^5.0.0
+  peerDependenciesMeta:
+    node-sass:
+      optional: true
+    sass:
+      optional: true
+    sass-embedded:
+      optional: true
+  checksum: 3e556f0f6eaba39958511eee0fcf73903a663d43da84f24c59cfa9d0f4d83e57007e040a79579ac5301ddb395fe6a49a3e494a2af1bc14ac69d38caa29221631
   languageName: node
   linkType: hard
 
